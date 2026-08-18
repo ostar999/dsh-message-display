@@ -1,5 +1,5 @@
 {
-  "name": "dsh-message-navigator",
+  "name": "dsh-message-display",
   "version": "0.1.0",
   "private": true,
   "description": "DSH Web 消息导航插件：页面右侧悬浮半透明胶囊按钮，悬停展开消息队列面板（只显示用户输入与每轮 AI 最终回复），移出自动收起；支持「我 / AI」过滤、浏览位置自动跟踪、点击定位并高亮闪烁，且自动加载「加载更早」以前的历史对话记录。",

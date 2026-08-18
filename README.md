@@ -1,4 +1,4 @@
-# dsh-message-navigator
+# dsh-message-display
 
 DeepSeek Harness（DSH）Web GUI 的**消息导航插件**：在页面右侧边缘放一个半透明胶囊按钮，悬停展开消息队列面板，点击任意消息即可平滑滚动定位并高亮闪烁。
 
@@ -19,11 +19,11 @@ DeepSeek Harness（DSH）Web GUI 的**消息导航插件**：在页面右侧边�
 ## 目录结构
 
 ```
-dsh-message-navigator/
+dsh-message-display/
 ├── package.json        # exports 与 dsh 清单：bundle 补丁 + 客户端入口
 ├── cordis.patch.yml    # 插入到 web profile 的插件行（- insert）
 ├── src/
-│   ├── index.js        # Host 半边：/dsh-message-navigator/fetch-history 路由 + 会话日志读取
+│   ├── index.js        # Host 半边：/dsh-message-display/fetch-history 路由 + 会话日志读取
 │   └── client.js       # 浏览器半边：消息导航 UI（window.__ModuleLoader__ 工厂形式）
 ├── lib/                # 构建产物（已提交，安装无需构建）
 │   ├── index.js
@@ -46,7 +46,7 @@ dsh-message-navigator/
 dsh plugin --profile web add github:ostar999/dsh-message-display
 ```
 
-`dsh plugin` 会在 `$DSH_HOME/profiles/web` 里用 pnpm 安装该仓库（安装后按包名 `dsh-message-navigator` 落库），并把本包（声明了 `dsh.bundle.patch`）自动加入该 profile 的 `dsh.profile.bundles` 层级列表。
+`dsh plugin` 会在 `$DSH_HOME/profiles/web` 里用 pnpm 安装该仓库（安装后按包名 `dsh-message-display` 落库），并把本包（声明了 `dsh.bundle.patch`）自动加入该 profile 的 `dsh.profile.bundles` 层级列表。
 
 > 本仓库的 `lib/` 构建产物已提交，**安装不需要任何构建步骤**。
 >
@@ -70,7 +70,7 @@ dsh plugin --profile web add .
 dsh --profile web --dump-config
 ```
 
-输出中应能看到 `dsh-message-navigator` 这一行（同时会挂载 Host 半边与浏览器半边）。
+输出中应能看到 `dsh-message-display` 这一行（同时会挂载 Host 半边与浏览器半边）。
 
 ### 生效
 
@@ -81,7 +81,7 @@ dsh --profile web --dump-config
 ### 常规卸载
 
 ```sh
-dsh plugin --profile web remove dsh-message-navigator
+dsh plugin --profile web remove dsh-message-display
 ```
 
 `dsh plugin` 会在 profile 里执行 `pnpm remove`，并把本包从 `dsh.profile.bundles` 层级列表中清理掉。**重启 `dsh web` 并刷新页面**后按钮消失。
@@ -90,8 +90,8 @@ dsh plugin --profile web remove dsh-message-navigator
 
 编辑 `$DSH_HOME/profiles/web/package.json`：
 
-- 删除 `dependencies` 里的 `"dsh-message-navigator"`；
-- 删除 `dsh.profile.bundles` 数组里的 `"dsh-message-navigator"`。
+- 删除 `dependencies` 里的 `"dsh-message-display"`；
+- 删除 `dsh.profile.bundles` 数组里的 `"dsh-message-display"`。
 
 如果曾在 `$DSH_HOME/profiles/web/cordis.patch.yml` 里手动写过相关 `insert`，也一并删除。然后重启 `dsh web`。
 
@@ -101,7 +101,7 @@ dsh plugin --profile web remove dsh-message-navigator
 
 ```yaml
 - disable:
-    id: dsh-message-navigator
+    id: dsh-message-display
 ```
 
 重启后本插件不挂载；删除这几行即可恢复。
@@ -110,7 +110,7 @@ dsh plugin --profile web remove dsh-message-navigator
 
 两个半边都是纯 JavaScript，无构建链依赖：
 
-- `src/index.js` — Host 半边。通过 `webServer` 注册同源路由 `/dsh-message-navigator/fetch-history`，用 `sessionQuery.readSession()` 读取会话日志，返回「边界之前」的用户输入与每轮 AI 最终输出（JSON）。
+- `src/index.js` — Host 半边。通过 `webServer` 注册同源路由 `/dsh-message-display/fetch-history`，用 `sessionQuery.readSession()` 读取会话日志，返回「边界之前」的用户输入与每轮 AI 最终输出（JSON）。
 - `src/client.js` — 浏览器半边。以 `window.__ModuleLoader__.load({ id, factory })` 的懒加载 CJS 形式提供，`require('react')` 使用 shell 共享的 React；样式注入的 `<style>` 标签由模块系统认领，卸载时自动清理。UI 注册在 `shell.overlay` 插槽。
 
 改完源码后：
@@ -133,7 +133,7 @@ pnpm run build        # 等价于 node scripts/build.mjs：src → lib
 
 - **`pnpm not found on PATH`**：安装 pnpm 后重试。
 - **安装后页面上没有按钮**：确认已重启 `dsh web` 并刷新页面；用 `dsh --profile web --dump-config` 确认插件行存在。
-- **控制台报 `/plugins/dsh-message-navigator/client.js` 404**：`lib/` 产物缺失，在仓库里跑一次 `pnpm run build`。
+- **控制台报 `/plugins/dsh-message-display/client.js` 404**：`lib/` 产物缺失，在仓库里跑一次 `pnpm run build`。
 - **面板提示「加载失败」**：面板内会显示具体原因（红色小字）。常见原因是 Host 半边路由不可用——确认 Host 半边正常挂载（`dump-config` 里插件行存在），并查看 `dsh web` 的启动日志。
 - **切换会话后历史串了**：不会。面板检测到当前会话 id 变化会自动清空历史缓存并重新加载。
 

@@ -1,8 +1,8 @@
-# dsh-message-navigator：插入到 web profile 的插件行。
+# dsh-message-display：插入到 web profile 的插件行。
 #
 # 通过 `dsh plugin --profile web add` 安装后，boot 会按
 # `dsh.profile.bundles` 顺序应用本层；这一行同时是 Host 半边
 # （main: lib/index.js）与浏览器半边（dsh.client → lib/client.js）的挂载点。
 - insert:
-    - id: dsh-message-navigator
-      name: 'dsh-message-navigator'
+    - id: dsh-message-display
+      name: 'dsh-message-display'
